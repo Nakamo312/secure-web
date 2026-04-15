@@ -1,0 +1,26 @@
+[DEFAULT]
+bantime = 600
+findtime = 600
+maxretry = 5
+banaction = iptables-multiport
+chain = DOCKER-USER
+
+[sshd]
+enabled = true
+port = ssh
+logpath = /var/log/auth.log
+
+[flask-login]
+enabled = true
+port = http,https
+filter = flask-login
+logpath = /var/log/flask/auth.log
+maxretry = 5
+findtime = 600
+bantime = 900
+
+[nginx-botsearch]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/access.log
+maxretry = 20
