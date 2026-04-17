@@ -15,24 +15,12 @@ services:
     environment:
       FLASK_APP: wsgi.py
       FLASK_ENV: production
-      DATABASE_URL: postgresql://site_user:strong_password_123@db:5432/site_db
-      SECRET_KEY: super_secret_key_change_me
+      DATABASE_URL: postgresql://site_app_user:S7eLp9Q2vR4mK8xC@192.168.10.20:5432/site_db
+      SECRET_KEY: change_me_to_a_long_random_secret
       TOKEN_EXPIRE_MINUTES: 60
-    depends_on:
-      - db
     volumes:
       - ./app:/app
       - ./logs/flask:/var/log/flask
-    restart: unless-stopped
-
-  db:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: site_db
-      POSTGRES_USER: site_user
-      POSTGRES_PASSWORD: strong_password_123
-    volumes:
-      - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
 
   fail2ban:
@@ -48,6 +36,3 @@ services:
       - ./logs/flask:/var/log/flask:ro
       - /var/log/auth.log:/var/log/auth.log:ro
     restart: unless-stopped
-
-volumes:
-  pg_data:
