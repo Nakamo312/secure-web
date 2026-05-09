@@ -17,6 +17,7 @@ def generate_token(user_id: int, username: str) -> str:
     payload = {
         "sub": str(user_id),
         "username": username,
+        "is_admin": is_admin,
         "iat": now,
         "exp": now + timedelta(
             minutes=current_app.config["TOKEN_EXPIRE_MINUTES"]
