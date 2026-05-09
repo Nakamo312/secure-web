@@ -15,9 +15,16 @@ services:
     environment:
       FLASK_APP: wsgi.py
       FLASK_ENV: production
-      DATABASE_URL: postgresql://site_app_user:S7eLp9Q2vR4mK8xC@192.168.10.20:5432/site_db
-      SECRET_KEY: change_me_to_a_long_random_secret
+      DB_HOST: 192.168.10.3
+      DB_PORT: 5432
+      DB_NAME: site_db
+      DB_USER: site_app_user
+      DB_PASSWORD_FILE: /run/secrets/site_app_db_password
+      SECRET_KEY_FILE: /run/secrets/flask_secret_key
       TOKEN_EXPIRE_MINUTES: 60
+    secrets:
+      - site_app_db_password
+      - flask_secret_key
     volumes:
       - ./app:/app
       - ./logs/flask:/var/log/flask
@@ -36,3 +43,9 @@ services:
       - ./logs/flask:/var/log/flask:ro
       - /var/log/auth.log:/var/log/auth.log:ro
     restart: unless-stopped
+
+secrets:
+  site_app_db_password:
+    file: ./secrets/site_app_db_password.txt
+  flask_secret_key:
+    file: ./secrets/flask_secret_key.txt
