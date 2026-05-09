@@ -8,10 +8,16 @@ from flask import (
     redirect,
     g,
     current_app,
+    abort,
 )
 
 
-def generate_token(user_id: int, username: str) -> str:
+def generate_token(
+    user_id: int,
+    username: str,
+    is_admin: bool,
+) -> str:
+
     now = datetime.now(timezone.utc)
 
     payload = {
@@ -57,6 +63,22 @@ def login_required(view_func):
             return redirect("/login")
 
         g.user = payload
+
+        return view_func(*args, **kwargs)
+
+    return wrapper
+
+
+def admin_required(view_func):
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        user = getattr(g, "user", None)
+
+        if not user:
+            return redirect("/login")
+
+        if not user.get("is_admin"):
+            abort(403)
 
         return view_func(*args, **kwargs)
 
