@@ -43,9 +43,30 @@ services:
       - ./logs/flask:/var/log/flask:ro
       - /var/log/auth.log:/var/log/auth.log:ro
     restart: unless-stopped
-
+  migrate:
+    build: ./app
+    environment:
+      FLASK_APP: wsgi.py
+      FLASK_ENV: production
+      DB_HOST: 192.168.10.3
+      DB_PORT: 5432
+      DB_NAME: site_db
+      DB_USER: db_admin_user
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password
+      SECRET_KEY_FILE: /run/secrets/flask_secret_key
+    secrets:
+      - db_admin_password
+      - flask_secret_key
+    volumes:
+      - ./app:/app
+    command: flask db upgrade
+    profiles:
+      - maintenance
+      
 secrets:
   site_app_db_password:
     file: ./secrets/site_app_db_password.txt
   flask_secret_key:
     file: ./secrets/flask_secret_key.txt
+  db_admin_password:
+    file: ./secrets/db_admin_password.txt
